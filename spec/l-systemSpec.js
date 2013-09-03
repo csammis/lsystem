@@ -1,7 +1,7 @@
 describe("A set of tests for an l-system production", function() {
 
     it("Production creates OK when given lhs and rhs", function() {
-        expect(lsystem.production({lhs: "A", rhs: "BA"})).toEqual(jasmine.any(Object));
+        expect(lsystem.production({lhs: "A", rhs: "BA"})).toNotEqual(jasmine.any(String));
     });
 
     it("Can't create a production without both lhs and rhs", function() {
@@ -27,5 +27,16 @@ describe("A set of tests for an l-system production", function() {
     it("Production A -> BA on ABBAABABA yields ABBAABABABA", function() {
         var p = lsystem.production({lhs: "A", rhs: "BA"});
         expect(p.produce("ABBAABABA")).toEqual("ABBAABABABA");
+    });
+});
+
+describe("A set of tests for l-system production synthesis", function() {
+    it("Production is created given an input of the correct form", function() {
+        var prod = lsystem.createProduction("A -> BA");
+        expect(prod).toNotEqual(jasmine.any(String));
+    });
+
+    it("A production is not created given an input with incorrect form", function() {
+        expect(lsystem.createProduction("A => BA")).toMatch(/ERROR/);
     });
 });

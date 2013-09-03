@@ -16,5 +16,16 @@ var lsystem = {
         };
 
         return that;
+    },
+
+    // Utility to create a production from a string 'lhs -> rhs';
+    createProduction : function(prod) {
+        var parts = prod.trim().split("->");
+        if (parts.length != 2)
+        {
+            return "ERROR - production must be of the form 'lhs -> rhs'";
+        }
+
+        return this.production({lhs: parts[0].trim(), rhs : parts[1].trim()});
     }
 };

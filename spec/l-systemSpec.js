@@ -40,3 +40,19 @@ describe("A set of tests for l-system production synthesis", function() {
         expect(lsystem.createProduction("A => BA")).toMatch(/ERROR/);
     });
 });
+
+describe("A set of tests for runGenerations", function() {
+    it("An error is returned when runGenerations is called with no axiom", function() {
+        expect(lsystem.runGenerations(1)).toMatch(/ERROR/);
+    });
+
+    it("An error is returned when runGenerations is called with no argument", function() {
+        lsystem.axiom = "A";
+        expect(lsystem.runGenerations()).toMatch(/ERROR/);
+    });
+
+    it("An error is returned when runGenerations is called with non-numeric argument", function() {
+        lsystem.axiom = "A";
+        expect(lsystem.runGenerations("A")).toMatch(/ERROR/);
+    });
+});

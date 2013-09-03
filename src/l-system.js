@@ -27,5 +27,19 @@ var lsystem = {
         }
 
         return this.production({lhs: parts[0].trim(), rhs : parts[1].trim()});
+    },
+
+    axiom : "",
+
+    runGenerations : function(n) {
+        if (this.axiom.trim().length == 0) {
+            return "ERROR - no axiom";
+        }
+
+        if (typeof n != "number") {
+            return "ERROR - runGenerations called without a number of generations";
+        }
+
+        return axiom;
     }
 };

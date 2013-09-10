@@ -1,6 +1,8 @@
 var lsystem = {
+
+    productions : new Set("productions"),
     
-    // Utility to create a production from a string 'lhs -> rhs';
+    // Creates a production from a string 'lhs -> rhs';
     createProduction : function(prod) {
         if (typeof prod == "undefined") {
             return "ERROR - must be given a production of the form 'lhs -> rhs'";
@@ -20,14 +22,23 @@ var lsystem = {
 
         var prod = {
             produce : function(input) {
-                return input.replace(lhsRE, rhs);
+                if (lhsRE.test(input)) {
+                    return input.replace(lhsRE, rhs);
+                }
+                return "";
             }
         };
 
+        this.productions.add(prod);
         return prod;
     },
 
     axiom : "",
+
+    clearSystem : function() {
+        this.axiom = "";
+        this.productions.clear();
+    }, 
 
     runGenerations : function(n) {
         if (this.axiom.trim().length == 0) {
@@ -38,6 +49,22 @@ var lsystem = {
             return "ERROR - runGenerations called without a number of generations";
         }
 
-        return axiom;
+        if (this.productions.size() == 0) {
+            return this.axiom;
+        }
+
+        var output = this.axiom;
+        var prods = this.productions;
+        for (var i = 0; i < n; i++) {
+            var generation = "";
+            for (var p in prods) {
+                if (prods.hasOwnProperty(p) && prods.contains(prods[p])) {
+                    generation = generation + prods[p].produce(output);
+                }
+            }
+            output = generation;
+        }
+
+        return output;
     }
 };

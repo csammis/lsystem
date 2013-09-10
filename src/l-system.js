@@ -1,30 +1,30 @@
 var lsystem = {
-    // lhs: string, rhs: string
-    production : function(spec) {
-        if (spec.lhs === undefined || spec.lhs.length == 0 || spec.rhs === undefined) {
-            return "ERROR - must specify lhs and rhs";
-        };
-
-        var lhsRE = new RegExp(spec.lhs, "g");
-
-        var that = { };
-
-        that.produce = function(input) {
-            return input.replace(lhsRE, spec.rhs);
-        };
-
-        return that;
-    },
-
+    
     // Utility to create a production from a string 'lhs -> rhs';
     createProduction : function(prod) {
+        if (typeof prod == "undefined") {
+            return "ERROR - must be given a production of the form 'lhs -> rhs'";
+        }
+
         var parts = prod.trim().split("->");
-        if (parts.length != 2)
-        {
+        if (parts.length != 2) {
             return "ERROR - production must be of the form 'lhs -> rhs'";
         }
 
-        return this.production({lhs: parts[0].trim(), rhs : parts[1].trim()});
+        var lhs = parts[0].trim(), rhs = parts[1].trim();
+        if (lhs.length == 0) {
+            return "ERROR - no LHS symbol in production";
+        }
+
+        var lhsRE = new RegExp(lhs, "g");
+
+        var prod = {
+            produce : function(input) {
+                return input.replace(lhsRE, rhs);
+            }
+        };
+
+        return prod;
     },
 
     axiom : "",

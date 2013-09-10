@@ -5,14 +5,12 @@ var lsystem = {
             return "ERROR - must specify lhs and rhs";
         };
 
+        var lhsRE = new RegExp(spec.lhs, "g");
+
         var that = { };
 
         that.produce = function(input) {
-            if (input.substr(spec.lhs.length * -1) == spec.lhs) {
-                return input.slice(0, (input.length - spec.lhs.length) + 1) + spec.rhs; 
-            }
-
-            return input;
+            return input.replace(lhsRE, spec.rhs);
         };
 
         return that;

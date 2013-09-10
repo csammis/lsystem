@@ -14,9 +14,9 @@ describe("A set of tests for an l-system production", function() {
         expect(lsystem.production({lhs: "", rhs: "BA"})).toMatch(/ERROR/);
     });
 
-    it("Production A -> BA on A yields ABA", function() {
+    it("Production A -> BA on A yields BA", function() {
         var p = lsystem.production({lhs: "A", rhs: "BA"});
-        expect(p.produce("A")).toEqual("ABA");
+        expect(p.produce("A")).toEqual("BA");
     });
 
     it("Production A -> BA on B yields B", function() {
@@ -24,9 +24,9 @@ describe("A set of tests for an l-system production", function() {
         expect(p.produce("B")).toEqual("B");
     });
 
-    it("Production A -> BA on ABBAABABA yields ABBAABABABA", function() {
+    it("Production A -> BA on ABBAABABA yields BABBBABABBABBA", function() {
         var p = lsystem.production({lhs: "A", rhs: "BA"});
-        expect(p.produce("ABBAABABA")).toEqual("ABBAABABABA");
+        expect(p.produce("ABBAABABA")).toEqual("BABBBABABBABBA");
     });
 });
 

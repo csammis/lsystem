@@ -1,0 +1,18 @@
+#main
+{
+    border-top:solid 2px gray;
+}
+
+#render
+{
+    float:left;
+    width:75%;
+    border-right:solid 2px gray;
+    min-height:40em;
+}
+
+#control
+{
+    margin-left:75%;
+    min-height:40em;
+}

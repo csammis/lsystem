@@ -6,13 +6,59 @@
 #render
 {
     float:left;
-    width:75%;
+    width:85%;
     border-right:solid 2px gray;
     min-height:40em;
 }
 
 #control
 {
-    margin-left:75%;
+    margin-left:85%;
     min-height:40em;
+    padding-left:0.5em;
+    padding-right:0.5em;
+}
+
+#control h3
+{
+    margin-top:0.5em;
+    margin-bottom:0.1em;
+}
+
+.controlentry
+{
+    width:100%;
+}
+
+.controlentry::-webkit-input-placeholder 
+{
+  font-style:italic;
+}
+
+.controlentry:-moz-placeholder 
+{
+    font-style:italic;
+}
+
+.controlentry:-ms-input-placeholder
+{
+    font-style:italic;
+}
+
+.production
+{
+    width:100%;
+    font-family:monospace;
+    padding:0.2em 0em 0.2em 0em;
+}
+
+.productionHover
+{
+    border:dashed 1px lightgray;
+}
+
+.productiontext
+{
+    padding-left:2em;
+    padding-top:0.2em;
 }

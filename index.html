@@ -15,14 +15,25 @@
 
 <div id="main">
     <div id="render"></div>
-    <div id="control"></div>
+    <div id="control">
+        <h3>Axiom</h3>
+        <div id="axiomentry">
+            <input type="text" id="axiom" class="controlentry" placeholder="Axiom: A" />
+        </div>
+        <h3>Productions</h3>
+        <div id="prodentry">
+            <input type="text" id="newprod" class="controlentry" placeholder="Production: A -> B" />
+        </div>
+    </div>
 </div>
 
 <footer>
 <a href="/" title="Back to index">Back to index</a>
 </footer>
 
-<script type="text/javascript" src="src/l-system.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
+<script type="text/javascript" src="src/LSystem.js"></script>
+<script type="text/javascript" src="src/main.js"></script>
 
 </body>
 </html>

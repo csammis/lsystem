@@ -1,5 +1,5 @@
 function LSystem() {
-    var system = { };
+    var system = new Array();
     var axiom = "";
 
     var self = this;
@@ -19,7 +19,7 @@ function LSystem() {
             return "ERROR - no LHS symbol in production";
         }
 
-        system[lhs] = rhs;
+        system.push({l : lhs, r : rhs});
         return self;
     };
 
@@ -42,10 +42,11 @@ function LSystem() {
         for (var g = 0; g < gens; g++) {
             var output = "";
             for (var i = 0; i < result.length; ) {
-                for (var p in system) {
-                    if (system.hasOwnProperty(p) && result.substr(i, p.length) == p) {
-                        output += system[p];
-                        i += p.length;
+                for (var p = 0; p < system.length; p++) {
+                    var lhs = system[p].l, rhs = system[p].r;
+                    if (result.substr(i, lhs.length) == lhs) {
+                        output += rhs;
+                        i += lhs.length;
                         break;
                     }
                 }

@@ -38,6 +38,16 @@
         });
         $("#generations").val(generationCount);
         $("#generations").change();
+
+        // Bind the Start button to starting this show
+        $("#start").click(function() {
+            var ret = lSystem.setAxiom($("#axiom").val());
+            if (typeof ret == "string") {
+                alert(ret);
+            } else {
+                $("#render").append($("<span>").text(lSystem.runGenerations(generationCount)));
+            }
+        });
     });
 
 

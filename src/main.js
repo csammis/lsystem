@@ -45,7 +45,7 @@
             if (typeof ret == "string") {
                 alert(ret);
             } else {
-                $("#render").append($("<span>").addClass("wordwrap").text(lSystem.runGenerations(generationCount)));
+                $("#render").empty().append($("<span>").addClass("wordwrap").text(lSystem.runGenerations(generationCount)));
             }
         });
     });

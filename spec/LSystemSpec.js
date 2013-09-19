@@ -61,6 +61,10 @@ describe("LSystem.runGenerations: Lindenmayer's algae l-system", function() {
             .setAxiom("A");
     });
 
+    it("generation 0", function() {
+        expect(lSystem.runGenerations(0)).toEqual("A");
+    });
+
     it("generation 1", function() {
         expect(lSystem.runGenerations(1)).toEqual("AB");
     });
@@ -75,5 +79,31 @@ describe("LSystem.runGenerations: Lindenmayer's algae l-system", function() {
 
     it("generation 4", function() {
         expect(lSystem.runGenerations(4)).toEqual("ABAABABA");
+    });
+});
+
+describe("LSystem.runGenerations: Koch curve", function() {
+
+    var lSystem = { };
+
+    beforeEach(function() {
+        lSystem = new LSystem();
+        lSystem.addProduction("F -> F+F-F-F+F").setAxiom("F");
+    });
+
+    it("generation 0", function() {
+        expect(lSystem.runGenerations(0)).toEqual("F");
+    });
+
+    it("generation 1", function() {
+        expect(lSystem.runGenerations(1)).toEqual("F+F-F-F+F");
+    });
+
+    it("generation 2", function() {
+        expect(lSystem.runGenerations(2)).toEqual("F+F-F-F+F+F+F-F-F+F-F+F-F-F+F-F+F-F-F+F+F+F-F-F+F");
+    });
+
+    it("generation 3", function() {
+        expect(lSystem.runGenerations(3)).toEqual("F+F-F-F+F+F+F-F-F+F-F+F-F-F+F-F+F-F-F+F+F+F-F-F+F+F+F-F-F+F+F+F-F-F+F-F+F-F-F+F-F+F-F-F+F+F+F-F-F+F-F+F-F-F+F+F+F-F-F+F-F+F-F-F+F-F+F-F-F+F+F+F-F-F+F-F+F-F-F+F+F+F-F-F+F-F+F-F-F+F-F+F-F-F+F+F+F-F-F+F+F+F-F-F+F+F+F-F-F+F-F+F-F-F+F-F+F-F-F+F+F+F-F-F+F");
     });
 });

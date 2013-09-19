@@ -41,15 +41,21 @@ function LSystem() {
         var result = axiom;
         for (var g = 0; g < gens; g++) {
             var output = "";
-            for (var i = 0; i < result.length; ) {
+
+            nextSymbol: for (var i = 0; i < result.length; ) {
+                var foundNonterminal = false;
                 for (var p = 0; p < system.length; p++) {
                     var lhs = system[p].l, rhs = system[p].r;
                     if (result.substr(i, lhs.length) == lhs) {
                         output += rhs;
                         i += lhs.length;
-                        break;
+                        continue nextSymbol;
                     }
                 }
+
+                // Handling the identity function by assuming that each non-recognized terminal is of length 1
+                output += result.charAt(i);
+                i++;
             }
             result = output;
         }

@@ -1,3 +1,9 @@
+h1, h2, h3
+{
+    margin-top:0.5em;
+    margin-bottom:0.1em;
+}
+
 #main
 {
     border-top:solid 2px gray;
@@ -25,12 +31,6 @@
     min-height:40em;
     padding-left:0.5em;
     padding-right:0.5em;
-}
-
-#control h3
-{
-    margin-top:0.5em;
-    margin-bottom:0.1em;
 }
 
 .controlentry

@@ -43,7 +43,6 @@ function LSystem() {
             var output = "";
 
             nextSymbol: for (var i = 0; i < result.length; ) {
-                var foundNonterminal = false;
                 for (var p = 0; p < system.length; p++) {
                     var lhs = system[p].l, rhs = system[p].r;
                     if (result.substr(i, lhs.length) == lhs) {
@@ -53,7 +52,7 @@ function LSystem() {
                     }
                 }
 
-                // Handling the identity function by assuming that each non-recognized terminal is of length 1
+                // Handling the identity function for a non-recognized terminal of length 1
                 output += result.charAt(i);
                 i++;
             }

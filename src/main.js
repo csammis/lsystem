@@ -14,6 +14,19 @@
     };
 
     $(function() {
+        resizeCanvas();
+        bindControls();
+    });
+
+    var resizeCanvas = function() {
+        // Size the canvas to the display area
+        var canvas = document.getElementById("rendering");
+        var displayArea = document.getElementById("displayarea");
+        canvas.width = displayArea.clientWidth - 4;
+        canvas.height = displayArea.clientHeight - 4;
+    };
+
+    var bindControls = function() {
         // Pressing "Enter" on the new production entry adds the production to the system
         $("#newprod").keypress(function(e) {
             if (e.which == 13) {
@@ -48,7 +61,6 @@
                 $("#render").empty().append($("<span>").addClass("wordwrap").text(lSystem.runGenerations(generationCount)));
             }
         });
-    });
-
+    };
 
 })();

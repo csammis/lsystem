@@ -13,7 +13,9 @@
 <body>
 <h1>L-Systems</h1>
 <div id="main">
-    <div id="render"></div>
+    <div id="displayarea">
+        <canvas id="rendering" width="100" height="100"></canvas>
+    </div>
     <div id="control">
         <h3>Axiom</h3>
         <div id="axiomentry">
@@ -26,10 +28,10 @@
         <div id="productions"></div>
         <h3 id="generationValue">Generations</h3>
         <div id="genentry">
-            1&nbsp;<input type="range" id="generations" min="1" max="100"></input>&nbsp;100
+            1&nbsp;<input type="range" id="generations" min="1" max="100" />&nbsp;100
         </div>
         <div id="startentry">
-            <input type="button" id="start" value="Start"></input>
+            <input type="button" id="start" value="Start" />
         </div>
     </div>
 </div>

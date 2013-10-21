@@ -2,6 +2,9 @@
     var lSystem = new LSystem();
     var generationCount = 5;
 
+    var renderers = new Array();
+    var selectedRenderer = undefined;
+
     var createProductionDisplay = function(prod) {
         $("#productions").append(
             $("<div>").addClass("production").append(
@@ -14,9 +17,15 @@
     };
 
     $(function() {
+        initRenderers();
         resizeCanvas();
         bindControls();
     });
+
+    var initRenderers = function() {
+        renderers.push(new NullRender());
+        renderers.push(new TurtleRender());
+    };
 
     var resizeCanvas = function() {
         // Size the canvas to the display area
@@ -61,6 +70,14 @@
                 $("#render").empty().append($("<span>").addClass("wordwrap").text(lSystem.runGenerations(generationCount)));
             }
         });
+
+        // Bind the render selector
+        $("#renderselect").change(function() {
+            selectedRenderer = renderers[this.value];
+            var config = selectedRenderer.getConfigDisplay();
+            $("#renderexplain").html(config);
+        });
+        $("#renderselect").change();
     };
 
 })();

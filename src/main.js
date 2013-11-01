@@ -32,7 +32,8 @@
         if (typeof ret == "string") {
             alert(ret);
         } else {
-            $("#render").empty().append($("<span>").addClass("wordwrap").text(lSystem.runGenerations(generationCount)));
+            var output = lSystem.runGenerations(generationCount);
+            $("#render").empty().append($("<span>").addClass("wordwrap").text(output));
         }
 
     };
@@ -44,8 +45,16 @@
     });
 
     var initRenderers = function() {
-        renderers.push(new NullRender());
+        renderers.push(new TextRender());
         renderers.push(new TurtleRender());
+
+        var $select = $("#renderselect");
+        $.each(renderers, function (i, renderer) {
+            $select.append($("<option>", {
+                value: i,
+                text: renderer.getName()
+            }));
+        });
     };
 
     var resizeCanvas = function() {

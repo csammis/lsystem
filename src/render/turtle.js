@@ -12,12 +12,7 @@ function TurtleRender() {
             "<b>R</b>: turn right by " + angle + "&deg;<br />";
     };
 
-    this.preRender = function() {
-    };
-
-    this.doRender = function(data) {
-    };
-
-    this.postRender = function() {
+    this.render = function(data) {
+        alert("nothing yet");
     };
 };

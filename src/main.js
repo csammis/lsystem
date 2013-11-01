@@ -33,9 +33,8 @@
             alert(ret);
         } else {
             var output = lSystem.runGenerations(generationCount);
-            $("#render").empty().append($("<span>").addClass("wordwrap").text(output));
+            selectedRenderer.render(output);
         }
-
     };
 
     $(function() {
@@ -50,10 +49,7 @@
 
         var $select = $("#renderselect");
         $.each(renderers, function (i, renderer) {
-            $select.append($("<option>", {
-                value: i,
-                text: renderer.getName()
-            }));
+            $select.append($("<option>", { value: i, text: renderer.getName() }));
         });
     };
 

@@ -16,6 +16,27 @@
         );
     };
 
+    var onAddNewProduction = function() {
+        var prod = $("#newprod").val();
+        var ret = lSystem.addProduction(prod);
+        if (typeof ret == "string") {
+            alert(ret);
+        } else {
+            createProductionDisplay(prod);
+            $("#newprod").val("");
+        }
+    };
+
+    var onStart = function() {
+        var ret = lSystem.setAxiom($("#axiom").val());
+        if (typeof ret == "string") {
+            alert(ret);
+        } else {
+            $("#render").empty().append($("<span>").addClass("wordwrap").text(lSystem.runGenerations(generationCount)));
+        }
+
+    };
+
     $(function() {
         initRenderers();
         resizeCanvas();
@@ -40,15 +61,7 @@
         $("#newprod").keypress(function(e) {
             if (e.which == 13) {
                 e.preventDefault();
-
-                var prod = this.value;
-                var ret = lSystem.addProduction(prod);
-                if (typeof ret == "string") {
-                    alert(ret);
-                } else {
-                    createProductionDisplay(prod);
-                    this.value = "";
-                }
+                onAddNewProduction();
             }
         });
 
@@ -62,14 +75,7 @@
         $("#generations").change();
 
         // Bind the Start button to starting this show
-        $("#start").click(function() {
-            var ret = lSystem.setAxiom($("#axiom").val());
-            if (typeof ret == "string") {
-                alert(ret);
-            } else {
-                $("#render").empty().append($("<span>").addClass("wordwrap").text(lSystem.runGenerations(generationCount)));
-            }
-        });
+        $("#start").click(function() { onStart(); });
 
         // Bind the render selector
         $("#renderselect").change(function() {

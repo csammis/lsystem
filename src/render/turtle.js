@@ -13,6 +13,23 @@ function TurtleRender() {
     };
 
     this.render = function(data) {
-        alert("nothing yet");
+        var $canvas = self.getRenderCanvas();
+    };
+
+    var self = {
+        getRenderCanvas : function() {
+            var $obj = $("#TurtleRenderCanvas");
+            if ($obj.length == 0) {
+                var $displayArea = $("#displayarea");
+                $obj = $("<canvas />", { id : "TurtleRenderCanvas" })
+                    .attr( { "width" : $displayArea.width() - 4,
+                             "height" : $displayArea.height() - 4 })
+                    .css("border", "solid 1px black");
+
+                $displayArea.empty();
+                $displayArea.append($obj);
+            }
+            return $obj;
+        }
     };
 };

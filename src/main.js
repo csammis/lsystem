@@ -39,7 +39,7 @@
 
     $(function() {
         initRenderers();
-        resizeCanvas();
+        //resizeCanvas();
         bindControls();
     });
 

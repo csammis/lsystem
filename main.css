@@ -18,11 +18,6 @@ h1, h2, h3
     padding-top:0.2em;
 }
 
-#rendering
-{
-    border:solid 1px black;
-}
-
 .wordwrap { 
    white-space: pre-wrap;      /* CSS3 */   
    white-space: -moz-pre-wrap; /* Firefox */    

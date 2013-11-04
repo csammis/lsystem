@@ -19,7 +19,7 @@ function TurtleRender() {
         context.fillStyle = "#ffffff";
         context.fillRect(0, 0, $canvas.width(), $canvas.height());
 
-        var currDir = self.NORTH, step = 5;
+        var currDir = self.EAST, step = 5;
         var x = ($canvas.width() / 2), y = ($canvas.height() / 2);
 
         context.fillStyle = "#000000";

@@ -16,8 +16,7 @@
         );
     };
 
-    var onAddNewProduction = function() {
-        var prod = $("#newprod").val();
+    var onAddNewProduction = function(prod) {
         var ret = lSystem.addProduction(prod);
         if (typeof ret == "string") {
             alert(ret);
@@ -39,8 +38,8 @@
 
     $(function() {
         initRenderers();
-        //resizeCanvas();
         bindControls();
+        parseUri();
     });
 
     var initRenderers = function() {
@@ -66,7 +65,7 @@
         $("#newprod").keypress(function(e) {
             if (e.which == 13) {
                 e.preventDefault();
-                onAddNewProduction();
+                onAddNewProduction(this.value);
             }
         });
 
@@ -89,6 +88,31 @@
             $("#renderexplain").html(config);
         });
         $("#renderselect").change();
+    };
+
+    var parseUri = function() {
+        var uri = window.location.search.substring(1);
+        var uriParts = uri.split("&");
+        for (var i = 0; i < uriParts.length; i++) {
+            var paramParts = uriParts[i].split("=");
+            var paramName = decodeURIComponent(paramParts[0]);
+            var paramValue = decodeURIComponent(paramParts[1]);
+
+            if (paramName == "axiom") {
+                $("#axiom").val(paramValue);
+            }
+            else if (paramName.substring(0, 4) == "prod") {
+                onAddNewProduction(paramValue);
+            }
+            else if (paramName == "gens") {
+                $("#generations").val(paramValue);
+                $("#generations").change();
+            }
+            else if (paramName == "renderer") {
+                $("#renderselect").val(paramValue);
+                $("#renderselect").change();
+            }
+        }
     };
 
 })();

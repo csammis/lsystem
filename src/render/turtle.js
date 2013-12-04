@@ -2,6 +2,8 @@ function TurtleRender() {
 
     var angle = 90.0;
 
+    var DEBUGGING = false;
+
     this.getName = function() {
         return "Turtle graphics";
     };
@@ -16,24 +18,25 @@ function TurtleRender() {
         var $canvas = self.getRenderCanvas();
         var context = $canvas[0].getContext('2d');
 
-        context.fillStyle = "#ffffff";
-        context.fillRect(0, 0, $canvas.width(), $canvas.height());
-
         var currDir = self.EAST, step = 5;
-        var x = ($canvas.width() / 2), y = ($canvas.height() / 2);
 
-        context.fillStyle = "#000000";
+        // Parse the incoming data to figure out how big the render will be
+        var x = 0, y = 0;
+        var minX = x, maxX = x, minY = y, maxY = y;
+        var coords = new Array();
+
         for (var i = 0; i < data.length; i++) {
             var c = data.charAt(i);
             switch (c)
             {
                 case 'F':
-                    context.beginPath();
-                    context.moveTo(x, y);
-                    x += currDir.x * step;
-                    y += currDir.y * step;
-                    context.lineTo(x, y);
-                    context.stroke();
+                    coords.push(currDir);
+                    x += currDir.x;
+                    y += currDir.y;
+                    if (x > maxX) maxX = x;
+                    if (x < minX) minX = x;
+                    if (y > maxY) maxY = y;
+                    if (y < minY) minY = y;
                     break;
                 case 'L':
                     if (currDir == self.NORTH) currDir = self.WEST;
@@ -49,6 +52,36 @@ function TurtleRender() {
                     break;
             }
         }
+
+        // Render loop: clear the canvas, figure out the starting location, draw lines
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, $canvas.width(), $canvas.height());
+        context.fillStyle = "#000000";
+
+        // Center the render in the canvas
+        var renderWidth = (maxX - minX) * step, renderHeight = (maxY - minY) * step;
+        var renderX = $canvas.width() / 2, renderY = $canvas.height() / 2;
+        x = renderX + (renderWidth / 2) - maxX * step;
+        y = renderY - (renderHeight / 2) - minY * step;
+
+        if (DEBUGGING)
+        {
+            // Mark starting point and draw a bounding box
+            context.beginPath();
+            context.arc(x, y, 10, 10, 0, 2 * Math.PI);
+            context.rect(renderX - (renderWidth / 2), renderY - (renderHeight / 2), renderWidth, renderHeight);
+            context.stroke();
+        }
+
+        
+        context.beginPath();
+        for (var i = 0; i < coords.length; i++) {
+            context.moveTo(x, y);
+            x += coords[i].x * step;
+            y += coords[i].y * step;
+            context.lineTo(x, y);
+        }
+        context.stroke();
     };
 
     var self = {

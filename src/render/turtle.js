@@ -18,7 +18,7 @@ function TurtleRender() {
         var $canvas = self.getRenderCanvas();
         var context = $canvas[0].getContext('2d');
 
-        var currDir = self.EAST, step = 5;
+        var currDir = self.EAST;
 
         // Parse the incoming data to figure out how big the render will be
         var x = 0, y = 0;
@@ -58,6 +58,9 @@ function TurtleRender() {
         context.fillRect(0, 0, $canvas.width(), $canvas.height());
         context.fillStyle = "#000000";
 
+        // Determine the step size so that the render is scaled to the canvas dimensions
+        var step = $canvas.width() / (maxX - minX);
+
         // Center the render in the canvas
         var renderWidth = (maxX - minX) * step, renderHeight = (maxY - minY) * step;
         var renderX = $canvas.width() / 2, renderY = $canvas.height() / 2;
@@ -91,8 +94,7 @@ function TurtleRender() {
                 var $displayArea = $("#displayarea");
                 $obj = $("<canvas />", { id : "TurtleRenderCanvas" })
                     .attr( { "width" : $displayArea.width() - 4,
-                             "height" : $displayArea.height() - 4 })
-                    .css("border", "solid 1px black");
+                             "height" : $displayArea.height() - 4 });
 
                 $displayArea.empty();
                 $displayArea.append($obj);

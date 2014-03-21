@@ -60,6 +60,10 @@ function TurtleRender() {
 
         // Determine the step size so that the render is scaled to the canvas dimensions
         var step = $canvas.width() / (maxX - minX);
+        if ((step * (maxY - minY)) > $canvas.height())
+        {
+            step = $canvas.height() / (maxY - minY);
+        }
 
         // Center the render in the canvas
         var renderWidth = (maxX - minX) * step, renderHeight = (maxY - minY) * step;

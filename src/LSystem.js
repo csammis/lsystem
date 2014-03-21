@@ -2,6 +2,8 @@ function LSystem() {
     var system = new Array();
     var axiom = "";
 
+    var checkProbabilities = false;
+
     var self = this;
 
     this.addProduction = function(prod) {
@@ -14,12 +16,41 @@ function LSystem() {
             return "ERROR - production must be of the form 'lhs -> rhs'";
         }
 
-        var lhs = parts[0].trim(), rhs = parts[1].trim();
-        if (lhs.length == 0) {
+        var left = parts[0].trim(), right = parts[1].trim();
+        if (left.length == 0) {
             return "ERROR - no LHS symbol in production";
         }
 
-        system.push({l : lhs, r : rhs});
+        var probability = 1.0;
+        if (left.indexOf(":") != -1) {
+            var leftparts = left.split(":");
+            if (leftparts.length != 2) {
+                return "ERROR - a stochastic production must be of the form 'lhs : probability -> rhs'";
+            }
+
+            left = leftparts[0].trim();
+            probability = leftparts[1].trim() * 1.0;
+            if (probability < 0 || probability >= 1) {
+                return "ERROR - probability of production must be between 0.0 and 1.0";
+            }
+
+            checkProbabilities = true;
+        }
+
+        var foundLhs = undefined;
+        for (var i = 0; i < system.length; i++) {
+            if (system[i].lhs == left) {
+                foundLhs = system[i];
+                break;
+            }
+        }
+
+        if (typeof foundLhs == "undefined") {
+            system.push({lhs : left, productions : new Array() });
+            foundLhs = system[system.length - 1];
+        }
+
+        foundLhs.productions.push({rhs : right, probability : probability});
         return self;
     };
 
@@ -36,25 +67,60 @@ function LSystem() {
         return self;
     };
 
+    this.validateProbabilities = function() {
+        for (var i = 0; i < system.length; i++) {
+            var prod = system[i];
+            var total = 0.0;
+            for (var j = 0; j < prod.productions.length; j++) {
+                total = total + (prod.productions[j].probability);
+            }
+            if (total != 1.0) {
+                return false;
+            }
+        }
+        return true;
+    };
+
     this.runGenerations = function(gens) {
 
+        if (self.validateProbabilities() == false) {
+            return "ERROR - production probabilties did not total to 1.0";
+        }
+
         var result = axiom;
-        for (var g = 0; g < gens; g++) {
+        for (var generation = 0; generation < gens; generation++) {
             var output = "";
 
-            nextSymbol: for (var i = 0; i < result.length; ) {
-                for (var p = 0; p < system.length; p++) {
-                    var lhs = system[p].l, rhs = system[p].r;
-                    if (result.substr(i, lhs.length) == lhs) {
+            nextSymbol:
+            for (var index = 0; index < result.length; ) {
+                for (var rule = 0; rule < system.length; rule++) {
+                    var lhs = system[rule].lhs;
+                    if (result.substr(index, lhs.length) == lhs) {
+                        var rhs = undefined;
+                        // Choose the RHS from among the production choices
+                        if (system[rule].productions[0].probability == 1.0) {
+                            rhs = system[rule].productions[0].rhs;
+                        } else {
+                            var choice = Math.random();
+                            var last = 0.0;
+                            for (var i = 0; i < system[rule].productions.length; i++) {
+                                if (choice >= last && choice < (last + system[rule].productions[i].probability)) {
+                                    rhs = system[rule].productions[i].rhs;
+                                    break;
+                                }
+                                last = last + system[rule].productions[i].probability;
+                            }
+                        }
+
                         output += rhs;
-                        i += lhs.length;
+                        index += lhs.length;
                         continue nextSymbol;
                     }
                 }
 
                 // Handling the identity function for a non-recognized terminal of length 1
-                output += result.charAt(i);
-                i++;
+                output += result.charAt(index);
+                index++;
             }
             result = output;
         }

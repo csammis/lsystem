@@ -27,8 +27,7 @@ function TurtleRender() {
 
         for (var i = 0; i < data.length; i++) {
             var c = data.charAt(i);
-            switch (c)
-            {
+            switch (c) {
                 case 'F':
                     coords.push(currDir);
                     x += currDir.x;
@@ -60,8 +59,7 @@ function TurtleRender() {
 
         // Determine the step size so that the render is scaled to the canvas dimensions
         var step = $canvas.width() / (maxX - minX);
-        if ((step * (maxY - minY)) > $canvas.height())
-        {
+        if ((step * (maxY - minY)) > $canvas.height()) {
             step = $canvas.height() / (maxY - minY);
         }
 
@@ -71,8 +69,7 @@ function TurtleRender() {
         x = renderX + (renderWidth / 2) - maxX * step;
         y = renderY - (renderHeight / 2) - minY * step;
 
-        if (DEBUGGING)
-        {
+        if (DEBUGGING) {
             // Mark starting point and draw a bounding box
             context.beginPath();
             context.arc(x, y, 10, 10, 0, 2 * Math.PI);

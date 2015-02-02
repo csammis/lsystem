@@ -4,6 +4,16 @@ function LSystem() {
 
     var self = this;
 
+    /*
+     * An LHS is represented as:
+     *  lhs: string
+     *  productions: array of productions whose probability must total 1.0
+     *
+     * A production is represented as:
+     *  rhs: string
+     *  probability: float
+     */
+
     this.addProduction = function(prod) {
         if (typeof prod == "undefined") {
             return "ERROR - must be given a production of the form 'lhs -> rhs'";

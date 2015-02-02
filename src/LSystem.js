@@ -2,8 +2,6 @@ function LSystem() {
     var system = new Array();
     var axiom = "";
 
-    var checkProbabilities = false;
-
     var self = this;
 
     this.addProduction = function(prod) {
@@ -33,8 +31,6 @@ function LSystem() {
             if (probability < 0 || probability >= 1) {
                 return "ERROR - probability of production must be between 0.0 and 1.0";
             }
-
-            checkProbabilities = true;
         }
 
         var foundLhs = undefined;

@@ -167,6 +167,31 @@ describe("LSystem.runGenerations: stochastic productions (approximate)", functio
     });
 });
 
+describe("LSystem.runGenerations: parametric evaluation", function() {
+    var lSystem = { };
+
+    beforeEach(function() {
+        lSystem = new LSystem();
+        lSystem.setAxiom("B(x)");
+    });
+
+    it("B(x) -> A over B(x) produces A", function() {
+        expect(lSystem.addProduction("B(x) -> A").runGenerations(1)).toEqual("A");
+    });
+
+    it("B() -> A over B(x) produces A", function() {
+        expect(lSystem.addProduction("B() -> A").runGenerations(1)).toEqual("A");
+    });
+
+    it("B -> A over B(x) produces A(x)", function() {
+        expect(lSystem.addProduction("B -> A").runGenerations(1)).toEqual("A(x)");
+    });
+
+    it("B() -> A over BAB(x) produces garbage", function() {
+        expect(lSystem.setAxiom("BAB(x)").addProduction("B() -> A")).toNotEqual("AAA");
+    });
+});
+
 describe("LSystem.runGenerations: Lindenmayer's algae l-system", function() {
     
     var lSystem = { };

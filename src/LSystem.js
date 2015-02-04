@@ -101,7 +101,26 @@ function LSystem() {
             for (var index = 0; index < result.length; ) {
                 for (var rule = 0; rule < system.length; rule++) {
                     var lhs = system[rule].lhs;
-                    if (result.substr(index, lhs.length) == lhs) {
+                    var lhsFound = false;
+                    var indexIncr = 0;
+
+                    // If the LHS is refering to a parametric expression then the are-we-seeing-this check gets a bit hairy
+                    // because requiring the LHS to express the parametric expression seems limited. The production author can
+                    // shortcut by specifing an empty set of parantheses on the non-terminal. See the "parametric evaluation" Jasmine spec.
+
+                    if (lhs.substr(lhs.length - 2, 2) == "()") {
+                        var token = lhs.substr(0, lhs.length - 2);
+                        if (result.substr(index, token.length) == token) {
+                            lhsFound = true;
+                            var endExpr = result.indexOf(')', index);
+                            lhsIncr = endExpr - index + 1;
+                        }
+                    } else {
+                        lhsFound = (result.substr(index, lhs.length) == lhs);
+                        lhsIncr = lhs.length;
+                    }
+
+                    if (lhsFound) {
                         var rhs = undefined;
                         // Choose the RHS from among the production choices
                         if (system[rule].productions[0].probability == 1.0) {
@@ -119,7 +138,7 @@ function LSystem() {
                         }
 
                         output += rhs;
-                        index += lhs.length;
+                        index += lhsIncr;
                         continue nextSymbol;
                     }
                 }

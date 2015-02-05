@@ -1,7 +1,6 @@
 function TurtleRender() {
 
-    var angle = 90.0;
-
+    var DEG2RAD = Math.PI / 180;
     var DEBUGGING = false;
 
     this.getName = function() {
@@ -9,9 +8,11 @@ function TurtleRender() {
     };
 
     this.getConfigDisplay = function() {
-        return "<b>F</b>: move forward<br />" +
-            "<b>L</b>: turn left by " + angle + "&deg;<br />" +
-            "<b>R</b>: turn right by " + angle + "&deg;<br />";
+        return "<b>L</b>: turn left by 90&deg;<br />" +
+            "<b>L(<i>x</i>)</b>: turn left by <i>x</i>&deg;<br />" +
+            "<b>R</b>: turn right by 90&deg;<br />" +
+            "<b>R(<i>x</i>)</b>: turn right by <i>x</i>&deg;<br />" +
+            "<b>Other letters</b>: move forward";
     };
 
     this.render = function(data) {
@@ -25,29 +26,42 @@ function TurtleRender() {
         var minX = x, maxX = x, minY = y, maxY = y;
         var coords = new Array();
 
+        // Store the current heading in angles around a unit circle. Start by heading east.
+        var currHeading = 0;
+
         for (var i = 0; i < data.length; i++) {
             var c = data.charAt(i);
             switch (c) {
-                case 'F':
-                    coords.push(currDir);
-                    x += currDir.x;
-                    y += currDir.y;
+                case 'L':
+                    if (data.charAt(i + 1) != '(') {
+                        currHeading -= 90;
+                    } else {
+                        var idx = data.indexOf(')', i);
+                        var arg = data.substr(i + 2, idx - i - 2);
+                        currHeading -= parseInt(arg, 10);
+                        i = idx;
+                    }
+                    break;
+                case 'R':
+                    if (data.charAt(i + 1) != '(') {
+                        currHeading += 90;
+                    } else {
+                        var idx = data.indexOf(')', i);
+                        var arg = data.substr(i + 2, idx - i - 2);
+                        currHeading += parseInt(arg, 10);
+                        i = idx;
+                    }
+                    break;
+                default:
+                    var xDiff = Math.cos(currHeading * DEG2RAD);
+                    var yDiff = Math.sin(currHeading * DEG2RAD);
+                    coords.push({x: xDiff, y: yDiff});
+                    x += xDiff;
+                    y += yDiff;
                     if (x > maxX) maxX = x;
                     if (x < minX) minX = x;
                     if (y > maxY) maxY = y;
                     if (y < minY) minY = y;
-                    break;
-                case 'L':
-                    if (currDir == self.NORTH) currDir = self.WEST;
-                    else if (currDir == self.WEST) currDir = self.SOUTH;
-                    else if (currDir == self.SOUTH) currDir = self.EAST;
-                    else if (currDir == self.EAST) currDir = self.NORTH;
-                    break;
-                case 'R':
-                    if (currDir == self.NORTH) currDir = self.EAST;
-                    else if (currDir == self.EAST) currDir = self.SOUTH;
-                    else if (currDir == self.SOUTH) currDir = self.WEST;
-                    else if (currDir == self.WEST) currDir = self.NORTH;
                     break;
             }
         }
@@ -73,7 +87,6 @@ function TurtleRender() {
             // Mark starting point and draw a bounding box
             context.beginPath();
             context.arc(x, y, 10, 10, 0, 2 * Math.PI);
-            context.rect(renderX - (renderWidth / 2), renderY - (renderHeight / 2), renderWidth, renderHeight);
             context.stroke();
         }
 
@@ -84,6 +97,11 @@ function TurtleRender() {
             x += coords[i].x * step;
             y += coords[i].y * step;
             context.lineTo(x, y);
+            if (DEBUGGING) {
+                var text = "(" + x + "," + y + ")";
+                context.fillText(text, x, y);
+                console.log(text);
+            }
         }
         context.stroke();
     };

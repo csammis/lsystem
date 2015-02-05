@@ -107,21 +107,27 @@ describe("LSystem.validateProbabilities", function() {
 describe("LSystem.runGenerations: stochastic productions (approximate)", function() {
     var lSystem = { };
     var inputCount = 1000;
-    var tolerance = 1;
+    var randomIndex = 0;
+    var randomArray = { };
 
-    var roughMatcher = {
-        toBeRoughly : function() {
-            return {
-                compare : function(actual, expected, tolerance) {
-                    var normal = expected;
-                    return { pass : (normal - tolerance) <= actual && actual <= (normal + tolerance) };
-                }
-            };
+    var mockRandom = function () {
+        var retval = randomArray[randomIndex];
+        randomIndex++;
+        return retval;
+    };
+
+    var initMockRandom = function() {
+        randomIndex = 0;
+        randomArray = new Array();
+        for (var i = 0; i < inputCount; i++) {
+            randomArray.push(i / inputCount);
         }
+
     };
 
     beforeEach(function() {
-        this.addMatchers(roughMatcher);
+        initMockRandom();
+        spyOn(Math, "random").and.callFake(mockRandom);
 
         lSystem = new LSystem();
         var axiom = "";
@@ -143,8 +149,8 @@ describe("LSystem.runGenerations: stochastic productions (approximate)", functio
         }
 
         expect(aCount).toBe(0);
-        expect(bCount).toBeRoughly(inputCount * 0.3, tolerance);
-        expect(cCount).toBeRoughly(inputCount * 0.7, tolerance);
+        expect(bCount).toBe(inputCount * 0.3);
+        expect(cCount).toBe(inputCount * 0.7);
     });
 
     it("runGenerations functions correctly with three stochastic rules", function() {
@@ -152,7 +158,7 @@ describe("LSystem.runGenerations: stochastic productions (approximate)", functio
                             .addProduction("A : 0.53 -> C")
                             .addProduction("A : 0.22 -> D")
                             .runGenerations(1);
-        var aCount = 0, bCount = 0, cCount = 0, dCount;
+        var aCount = 0, bCount = 0, cCount = 0, dCount = 0;
         for (var i = 0; i < inputCount; i++) {
             if (output.charAt(i) == 'A') aCount++;
             if (output.charAt(i) == 'B') bCount++;
@@ -161,9 +167,9 @@ describe("LSystem.runGenerations: stochastic productions (approximate)", functio
         }
 
         expect(aCount).toBe(0);
-        expect(bCount).toBeRoughly(inputCount * 0.25, tolerance);
-        expect(cCount).toBeRoughly(inputCount * 0.53, tolerance);
-        expect(dCount).toBeRoughly(inputCount * 0.22, tolerance);
+        expect(bCount).toBe(inputCount * 0.25);
+        expect(cCount).toBe(inputCount * 0.53);
+        expect(dCount).toBe(inputCount * 0.22);
     });
 });
 
@@ -188,7 +194,7 @@ describe("LSystem.runGenerations: parametric evaluation", function() {
     });
 
     it("B() -> A over BAB(x) produces garbage", function() {
-        expect(lSystem.setAxiom("BAB(x)").addProduction("B() -> A")).toNotEqual("AAA");
+        expect(lSystem.setAxiom("BAB(x)").addProduction("B() -> A")).not.toEqual("AAA");
     });
 });
 

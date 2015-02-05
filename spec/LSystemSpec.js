@@ -104,7 +104,7 @@ describe("LSystem.validateProbabilities", function() {
     });
 });
 
-describe("LSystem.runGenerations: stochastic productions (approximate)", function() {
+describe("LSystem.runGenerations: stochastic productions", function() {
     var lSystem = { };
     var inputCount = 1000;
     var randomIndex = 0;

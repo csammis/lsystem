@@ -19,14 +19,43 @@ describe("LSystem.addProduction", function() {
 
     it("Well-formed production is added", function() {
         expect(lSystem.addProduction("lhs -> rhs")).toBe(lSystem);
+        expect(lSystem.getProductionCount()).toEqual(1);
     });
 
     it("addProduction chains correctly", function() {
         expect(lSystem.addProduction("A -> B").addProduction("B -> C")).toBe(lSystem);
+        expect(lSystem.getProductionCount()).toEqual(2);
     });
 });
 
-describe("LSystem.addProduction - stochastic", function () {
+describe("LSystem.removeProduction", function() {
+    var lSystem = { };
+
+    beforeEach(function() {
+        lSystem = new LSystem();
+    });
+
+    it("Remove production does not decrement below zero", function() {
+        expect(lSystem.getProductionCount()).toEqual(0);
+        expect(lSystem.removeProduction("A -> B").getProductionCount()).toEqual(0);
+    });
+
+    it("Matching production is removed", function() {
+        expect(lSystem.addProduction("A -> B").getProductionCount()).toEqual(1);
+        expect(lSystem.removeProduction("A -> B").getProductionCount()).toEqual(0);
+    });
+
+    it("Non-matching productions are not removed", function() {
+        expect(lSystem.addProduction("A -> B").addProduction("B -> C").getProductionCount()).toEqual(2);
+        expect(lSystem.removeProduction("A -> B").getProductionCount()).toEqual(1);
+    });
+
+    it("Removed production can be readded without error", function() {
+        expect(lSystem.addProduction("A -> B").removeProduction("A -> B").addProduction("A -> B")).toBe(lSystem);
+    });
+});
+
+describe("LSystem.addProduction - stochastic", function() {
     var lSystem = { };
 
     beforeEach(function() {

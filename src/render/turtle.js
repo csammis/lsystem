@@ -12,14 +12,13 @@ function TurtleRender() {
             "<b>L(<i>x</i>)</b>: turn left by <i>x</i>&deg;<br />" +
             "<b>R</b>: turn right by 90&deg;<br />" +
             "<b>R(<i>x</i>)</b>: turn right by <i>x</i>&deg;<br />" +
-            "<b>Other letters</b>: move forward";
+            "<b>Other letters</b>: move forward<br /><br />" +
+            '<input type="checkbox" id="animateTurtle" /> Animate output';
     };
 
     this.render = function(data) {
         var $canvas = self.getRenderCanvas();
         var context = $canvas[0].getContext('2d');
-
-        var currDir = self.EAST;
 
         // Parse the incoming data to figure out how big the render will be
         var x = 0, y = 0;
@@ -84,26 +83,41 @@ function TurtleRender() {
         y = renderY - (renderHeight / 2) - minY * step;
 
         if (DEBUGGING) {
-            // Mark starting point and draw a bounding box
             context.beginPath();
             context.arc(x, y, 10, 10, 0, 2 * Math.PI);
             context.stroke();
         }
 
-        
-        context.beginPath();
-        for (var i = 0; i < coords.length; i++) {
-            context.moveTo(x, y);
-            x += coords[i].x * step;
-            y += coords[i].y * step;
-            context.lineTo(x, y);
-            if (DEBUGGING) {
-                var text = "(" + x + "," + y + ")";
-                context.fillText(text, x, y);
-                console.log(text);
+        if ($('#animateTurtle').is(':checked')) {
+            var iter = 0;
+            var renderFunc = function() {
+                context.beginPath();
+                context.moveTo(x, y);
+                x += coords[iter].x * step;
+                y += coords[iter].y * step;
+                context.lineTo(x, y);
+                context.stroke();
+                if (iter < coords.length) {
+                    iter++;
+                    requestAnimationFrame(renderFunc);
+                }
+            };
+            requestAnimationFrame(renderFunc);
+        } else {
+            context.beginPath();
+            for (var i = 0; i < coords.length; i++) {
+                context.moveTo(x, y);
+                x += coords[i].x * step;
+                y += coords[i].y * step;
+                context.lineTo(x, y);
+                if (DEBUGGING) {
+                    var text = "(" + x + "," + y + ")";
+                    context.fillText(text, x, y);
+                    console.log(text);
+                }
             }
+            context.stroke();
         }
-        context.stroke();
     };
 
     var self = {
@@ -119,11 +133,6 @@ function TurtleRender() {
                 $displayArea.append($obj);
             }
             return $obj;
-        },
-
-        NORTH : { x : 0, y : -1 },
-        SOUTH : { x : 0, y : 1 },
-        EAST : {x : 1, y : 0},
-        WEST : {x : -1, y : 0}
+        }
     };
 };

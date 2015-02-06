@@ -19,8 +19,6 @@ function TurtleRender() {
         var $canvas = self.getRenderCanvas();
         var context = $canvas[0].getContext('2d');
 
-        var currDir = self.EAST;
-
         // Parse the incoming data to figure out how big the render will be
         var x = 0, y = 0;
         var minX = x, maxX = x, minY = y, maxY = y;
@@ -84,7 +82,6 @@ function TurtleRender() {
         y = renderY - (renderHeight / 2) - minY * step;
 
         if (DEBUGGING) {
-            // Mark starting point and draw a bounding box
             context.beginPath();
             context.arc(x, y, 10, 10, 0, 2 * Math.PI);
             context.stroke();
@@ -119,11 +116,6 @@ function TurtleRender() {
                 $displayArea.append($obj);
             }
             return $obj;
-        },
-
-        NORTH : { x : 0, y : -1 },
-        SOUTH : { x : 0, y : 1 },
-        EAST : {x : 1, y : 0},
-        WEST : {x : -1, y : 0}
+        }
     };
 };

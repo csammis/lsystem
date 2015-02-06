@@ -5,11 +5,11 @@ function LSystem() {
     var self = this;
 
     /*
-     * An LHS is represented as:
+     * A production is represented as:
      *  lhs: string
      *  productions: array of productions whose probability must total 1.0
      *
-     * A production is represented as:
+     * An element in the 'productions' array is represented as:
      *  rhs: string
      *  probability: float
      */

@@ -6,14 +6,48 @@
     var selectedRenderer = undefined;
 
     var createProductionDisplay = function(prod) {
-        $("#productions").append(
-            $("<div>").addClass("production").append(
-                $("<span>").addClass("productiontext").text(prod)
-            ).hover(
-                function() { $(this).addClass("productionHover"); },
-                function() { $(this).removeClass("productionHover"); }
-            )
-        );
+        var $production = $('<div>').addClass('production')
+                                    .hover(
+                                        function() { $(this).addClass("productionHover"); },
+                                        function() { $(this).removeClass("productionHover"); }
+                                    );
+
+        var $spancontainer = $('<span>').addClass('productioncontainer').appendTo($production);
+        $("<span>").addClass("productiontext").text(prod).click(function() {
+            var $stash = $(this);
+            var preEditProd = $stash.text();
+            $stash.detach();
+
+            var finished = function() { $spancontainer.empty(); $stash.appendTo($spancontainer); };
+
+            var $edit = $('<input>').attr('type', 'text').val(preEditProd).appendTo($spancontainer);
+            $edit.keydown(function(event) {
+                if (event.which == 13) {
+                    event.preventDefault();
+                    lSystem.removeProduction(preEditProd);
+                    var newProd = $edit.val();
+                    if (newProd == '') {
+                        $stash.remove();
+                        $production.remove();
+                    } else {
+                        var retval = lSystem.addProduction(newProd);
+                        if (typeof retval == 'string') {
+                            alert(retval);
+                            lSystem.addProduction(preEditProd);
+                        } else {
+                            $stash.text(newProd);
+                            finished();
+                        }
+                    }
+                } else if (event.which == 27) {
+                    event.preventDefault();
+                    finished();
+                }
+            }).focus().select();
+        })
+        .appendTo($spancontainer);
+
+        $('#productions').append($production);
     };
 
     var onAddNewProduction = function(prod) {

@@ -88,15 +88,24 @@ function TurtleRender() {
             context.stroke();
         }
 
+        var updateXY = function(iter) {
+            context.beginPath();
+            context.moveTo(x, y);
+            x += coords[iter].x * step;
+            y += coords[iter].y * step;
+            context.lineTo(x, y);
+            context.stroke();
+            if (DEBUGGING) {
+                var text = '(' + x + ',' + y + ')';
+                context.fillText(text, x, y);
+                console.log(text);
+            }
+        };
+
         if ($('#animateTurtle').is(':checked')) {
             var iter = 0;
             var renderFunc = function() {
-                context.beginPath();
-                context.moveTo(x, y);
-                x += coords[iter].x * step;
-                y += coords[iter].y * step;
-                context.lineTo(x, y);
-                context.stroke();
+                updateXY(iter);
                 if (iter < coords.length) {
                     iter++;
                     requestAnimationFrame(renderFunc);
@@ -104,19 +113,9 @@ function TurtleRender() {
             };
             requestAnimationFrame(renderFunc);
         } else {
-            context.beginPath();
             for (var i = 0; i < coords.length; i++) {
-                context.moveTo(x, y);
-                x += coords[i].x * step;
-                y += coords[i].y * step;
-                context.lineTo(x, y);
-                if (DEBUGGING) {
-                    var text = "(" + x + "," + y + ")";
-                    context.fillText(text, x, y);
-                    console.log(text);
-                }
+                updateXY(i);
             }
-            context.stroke();
         }
     };
 

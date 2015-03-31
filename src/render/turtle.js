@@ -12,7 +12,8 @@ function TurtleRender() {
             "<b>L(<i>x</i>)</b>: turn left by <i>x</i>&deg;<br />" +
             "<b>R</b>: turn right by 90&deg;<br />" +
             "<b>R(<i>x</i>)</b>: turn right by <i>x</i>&deg;<br />" +
-            "<b>Other letters</b>: move forward<br /><br />" +
+            "<b>A,B,F,G</b>: move forward<br />" +
+            "<b>Other characters</b>: control evolution</br /><br />" +
             '<input type="checkbox" id="animateTurtle" /> Animate output';
     };
 
@@ -50,7 +51,10 @@ function TurtleRender() {
                 case 'R':
                     i = readParameter(data, i, '90', function(f) { currHeading += parseInt(f, 10); });
                     break;
-                default:
+                case 'A':
+                case 'B':
+                case 'F':
+                case 'G':
                     x += Math.cos(currHeading * DEG2RAD);
                     y += Math.sin(currHeading * DEG2RAD);
                     unscaledCoords.push({x: x, y: y});
@@ -58,6 +62,8 @@ function TurtleRender() {
                     if (x < minX) minX = x;
                     if (y > maxY) maxY = y;
                     if (y < minY) minY = y;
+                    break;
+                default:
                     break;
             }
         }

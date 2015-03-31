@@ -16,6 +16,19 @@ function TurtleRender() {
             '<input type="checkbox" id="animateTurtle" /> Animate output';
     };
 
+    var readParameter = function(data, i, defaultValue, func) {
+        var newIndex = i;
+        if (data.charAt(i + 1) != '(') {
+            func(defaultValue);
+        } else {
+            var idx = data.indexOf(')', i);
+            var arg = data.substr(i + 2, idx - i - 2);
+            func(arg);
+            newIndex = idx;
+        }
+        return newIndex;
+    };
+
     this.render = function(data) {
         var $canvas = self.getRenderCanvas();
         var context = $canvas[0].getContext('2d');
@@ -32,24 +45,10 @@ function TurtleRender() {
             var c = data.charAt(i);
             switch (c) {
                 case 'L':
-                    if (data.charAt(i + 1) != '(') {
-                        currHeading -= 90;
-                    } else {
-                        var idx = data.indexOf(')', i);
-                        var arg = data.substr(i + 2, idx - i - 2);
-                        currHeading -= parseInt(arg, 10);
-                        i = idx;
-                    }
+                    i = readParameter(data, i, '90', function(f) { currHeading -= parseInt(f, 10); });
                     break;
                 case 'R':
-                    if (data.charAt(i + 1) != '(') {
-                        currHeading += 90;
-                    } else {
-                        var idx = data.indexOf(')', i);
-                        var arg = data.substr(i + 2, idx - i - 2);
-                        currHeading += parseInt(arg, 10);
-                        i = idx;
-                    }
+                    i = readParameter(data, i, '90', function(f) { currHeading += parseInt(f, 10); });
                     break;
                 default:
                     var xDiff = Math.cos(currHeading * DEG2RAD);

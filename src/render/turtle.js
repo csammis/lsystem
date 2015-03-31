@@ -36,7 +36,7 @@ function TurtleRender() {
         // Parse the incoming data to figure out how big the render will be
         var x = 0, y = 0;
         var minX = x, maxX = x, minY = y, maxY = y;
-        var coords = new Array();
+        var unscaledCoords = new Array();
 
         // Store the current heading in angles around a unit circle. Start by heading east.
         var currHeading = 0;
@@ -51,11 +51,9 @@ function TurtleRender() {
                     i = readParameter(data, i, '90', function(f) { currHeading += parseInt(f, 10); });
                     break;
                 default:
-                    var xDiff = Math.cos(currHeading * DEG2RAD);
-                    var yDiff = Math.sin(currHeading * DEG2RAD);
-                    coords.push({x: xDiff, y: yDiff});
-                    x += xDiff;
-                    y += yDiff;
+                    x += Math.cos(currHeading * DEG2RAD);
+                    y += Math.sin(currHeading * DEG2RAD);
+                    unscaledCoords.push({x: x, y: y});
                     if (x > maxX) maxX = x;
                     if (x < minX) minX = x;
                     if (y > maxY) maxY = y;
@@ -78,8 +76,11 @@ function TurtleRender() {
         // Center the render in the canvas
         var renderWidth = (maxX - minX) * step, renderHeight = (maxY - minY) * step;
         var renderX = $canvas.width() / 2, renderY = $canvas.height() / 2;
-        x = renderX + (renderWidth / 2) - maxX * step;
-        y = renderY - (renderHeight / 2) - minY * step;
+        xOffset = renderX + (renderWidth / 2) - maxX * step;
+        yOffset = renderY - (renderHeight / 2) - minY * step;
+        
+        // Start at the offset coordinates
+        x = xOffset; y = yOffset;
 
         if (DEBUGGING) {
             context.beginPath();
@@ -90,8 +91,8 @@ function TurtleRender() {
         var updateXY = function(iter) {
             context.beginPath();
             context.moveTo(x, y);
-            x += coords[iter].x * step;
-            y += coords[iter].y * step;
+            x = (unscaledCoords[iter].x * step) + xOffset;
+            y = (unscaledCoords[iter].y * step) + yOffset;
             context.lineTo(x, y);
             context.stroke();
             if (DEBUGGING) {
@@ -105,14 +106,14 @@ function TurtleRender() {
             var iter = 0;
             var renderFunc = function() {
                 updateXY(iter);
-                if (iter < coords.length) {
+                if (iter < unscaledCoords.length) {
                     iter++;
                     requestAnimationFrame(renderFunc);
                 }
             };
             requestAnimationFrame(renderFunc);
         } else {
-            for (var i = 0; i < coords.length; i++) {
+            for (var i = 0; i < unscaledCoords.length; i++) {
                 updateXY(i);
             }
         }

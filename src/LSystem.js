@@ -1,15 +1,17 @@
 function LSystem() {
     var system = new Array();
+    var productionCount = 0;
     var axiom = "";
 
     var self = this;
 
     /*
-     * An LHS is represented as:
+     * A production is represented as:
      *  lhs: string
      *  productions: array of productions whose probability must total 1.0
      *
-     * A production is represented as:
+     * An element in the 'productions' array is represented as:
+     *  original: the unparsed string, used for removing a production
      *  rhs: string
      *  probability: float
      */
@@ -56,8 +58,29 @@ function LSystem() {
             foundLhs = system[system.length - 1];
         }
 
-        foundLhs.productions.push({rhs : right, probability : probability});
+        foundLhs.productions.push({original: prod, rhs : right, probability : probability});
+        productionCount++;
         return self;
+    };
+
+    this.removeProduction = function(prod) {
+        for (var i = 0; i < system.length; i++) {
+            for (var j = 0; j < system[i].productions.length; j++) {
+                if (system[i].productions[j].original == prod) {
+                    system[i].productions.splice(j, 1);
+                    if (system[i].productions.length == 0) {
+                        system.splice(i, 1);
+                    }
+                    productionCount--;
+                    break;
+                }
+            }
+        }
+        return self;
+    };
+
+    this.getProductionCount = function() {
+        return productionCount;
     };
 
     this.setAxiom = function(ax) {

@@ -12,8 +12,24 @@ function TurtleRender() {
             "<b>L(<i>x</i>)</b>: turn left by <i>x</i>&deg;<br />" +
             "<b>R</b>: turn right by 90&deg;<br />" +
             "<b>R(<i>x</i>)</b>: turn right by <i>x</i>&deg;<br />" +
-            "<b>Other letters</b>: move forward<br /><br />" +
+            "<b>A,B,F,G</b>: move forward<br />" +
+            "<b>[</b>: push position and heading<br />" +
+            "<b>]</b>: pop position and heading<br />" +
+            "<b>Other characters</b>: control evolution</br /><br />" +
             '<input type="checkbox" id="animateTurtle" /> Animate output';
+    };
+
+    var readParameter = function(data, i, defaultValue, func) {
+        var newIndex = i;
+        if (data.charAt(i + 1) != '(') {
+            func(defaultValue);
+        } else {
+            var idx = data.indexOf(')', i);
+            var arg = data.substr(i + 2, idx - i - 2);
+            func(arg);
+            newIndex = idx;
+        }
+        return newIndex;
     };
 
     this.render = function(data) {
@@ -23,44 +39,46 @@ function TurtleRender() {
         // Parse the incoming data to figure out how big the render will be
         var x = 0, y = 0;
         var minX = x, maxX = x, minY = y, maxY = y;
-        var coords = new Array();
+        var unscaledCoords = new Array();
 
         // Store the current heading in angles around a unit circle. Start by heading east.
         var currHeading = 0;
+        var stack = new Array();
 
         for (var i = 0; i < data.length; i++) {
             var c = data.charAt(i);
             switch (c) {
                 case 'L':
-                    if (data.charAt(i + 1) != '(') {
-                        currHeading -= 90;
-                    } else {
-                        var idx = data.indexOf(')', i);
-                        var arg = data.substr(i + 2, idx - i - 2);
-                        currHeading -= parseInt(arg, 10);
-                        i = idx;
-                    }
+                    i = readParameter(data, i, '90', function(f) { currHeading -= parseInt(f, 10); });
                     break;
                 case 'R':
-                    if (data.charAt(i + 1) != '(') {
-                        currHeading += 90;
-                    } else {
-                        var idx = data.indexOf(')', i);
-                        var arg = data.substr(i + 2, idx - i - 2);
-                        currHeading += parseInt(arg, 10);
-                        i = idx;
-                    }
+                    i = readParameter(data, i, '90', function(f) { currHeading += parseInt(f, 10); });
                     break;
-                default:
-                    var xDiff = Math.cos(currHeading * DEG2RAD);
-                    var yDiff = Math.sin(currHeading * DEG2RAD);
-                    coords.push({x: xDiff, y: yDiff});
-                    x += xDiff;
-                    y += yDiff;
+                case 'A':
+                case 'B':
+                case 'F':
+                case 'G':
+                    x += Math.cos(currHeading * DEG2RAD);
+                    y += Math.sin(currHeading * DEG2RAD);
+                    unscaledCoords.push({x: x, y: y});
                     if (x > maxX) maxX = x;
                     if (x < minX) minX = x;
                     if (y > maxY) maxY = y;
                     if (y < minY) minY = y;
+                    break;
+                case '[':
+                    var o = {x: x, y: y, h: currHeading};
+                    stack.push(o);
+                    break;
+                case ']':
+                    var o = stack.pop();
+                    x = o.x;
+                    y = o.y;
+                    currHeading = o.h;
+                    //csnote: shouldn't draw a line to the coordinate pushed here
+                    unscaledCoords.push({x: x, y: y, nodraw: true});
+                    break;
+                default:
                     break;
             }
         }
@@ -79,8 +97,11 @@ function TurtleRender() {
         // Center the render in the canvas
         var renderWidth = (maxX - minX) * step, renderHeight = (maxY - minY) * step;
         var renderX = $canvas.width() / 2, renderY = $canvas.height() / 2;
-        x = renderX + (renderWidth / 2) - maxX * step;
-        y = renderY - (renderHeight / 2) - minY * step;
+        xOffset = renderX + (renderWidth / 2) - maxX * step;
+        yOffset = renderY - (renderHeight / 2) - minY * step;
+        
+        // Start at the offset coordinates
+        x = xOffset; y = yOffset;
 
         if (DEBUGGING) {
             context.beginPath();
@@ -88,35 +109,38 @@ function TurtleRender() {
             context.stroke();
         }
 
+        var updateXY = function(iter) {
+            context.beginPath();
+            context.moveTo(x, y);
+            var coord = unscaledCoords[iter];
+            x = (coord.x * step) + xOffset;
+            y = (coord.y * step) + yOffset;
+            if (coord.nodraw === undefined)
+            {
+                context.lineTo(x, y);
+            }
+            context.stroke();
+            if (DEBUGGING) {
+                var text = '(' + x + ',' + y + ')';
+                context.fillText(text, x, y);
+                console.log(text);
+            }
+        };
+
         if ($('#animateTurtle').is(':checked')) {
             var iter = 0;
             var renderFunc = function() {
-                context.beginPath();
-                context.moveTo(x, y);
-                x += coords[iter].x * step;
-                y += coords[iter].y * step;
-                context.lineTo(x, y);
-                context.stroke();
-                if (iter < coords.length) {
+                updateXY(iter);
+                if (iter < unscaledCoords.length) {
                     iter++;
                     requestAnimationFrame(renderFunc);
                 }
             };
             requestAnimationFrame(renderFunc);
         } else {
-            context.beginPath();
-            for (var i = 0; i < coords.length; i++) {
-                context.moveTo(x, y);
-                x += coords[i].x * step;
-                y += coords[i].y * step;
-                context.lineTo(x, y);
-                if (DEBUGGING) {
-                    var text = "(" + x + "," + y + ")";
-                    context.fillText(text, x, y);
-                    console.log(text);
-                }
+            for (var i = 0; i < unscaledCoords.length; i++) {
+                updateXY(i);
             }
-            context.stroke();
         }
     };
 

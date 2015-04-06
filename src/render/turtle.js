@@ -13,6 +13,8 @@ function TurtleRender() {
             "<b>R</b>: turn right by 90&deg;<br />" +
             "<b>R(<i>x</i>)</b>: turn right by <i>x</i>&deg;<br />" +
             "<b>A,B,F,G</b>: move forward<br />" +
+            "<b>[</b>: push position and heading<br />" +
+            "<b>]</b>: pop position and heading<br />" +
             "<b>Other characters</b>: control evolution</br /><br />" +
             '<input type="checkbox" id="animateTurtle" /> Animate output';
     };
@@ -41,6 +43,7 @@ function TurtleRender() {
 
         // Store the current heading in angles around a unit circle. Start by heading east.
         var currHeading = 0;
+        var stack = new Array();
 
         for (var i = 0; i < data.length; i++) {
             var c = data.charAt(i);
@@ -62,6 +65,18 @@ function TurtleRender() {
                     if (x < minX) minX = x;
                     if (y > maxY) maxY = y;
                     if (y < minY) minY = y;
+                    break;
+                case '[':
+                    var o = {x: x, y: y, h: currHeading};
+                    stack.push(o);
+                    break;
+                case ']':
+                    var o = stack.pop();
+                    x = o.x;
+                    y = o.y;
+                    currHeading = o.h;
+                    //csnote: shouldn't draw a line to the coordinate pushed here
+                    unscaledCoords.push({x: x, y: y, nodraw: true});
                     break;
                 default:
                     break;
@@ -97,9 +112,13 @@ function TurtleRender() {
         var updateXY = function(iter) {
             context.beginPath();
             context.moveTo(x, y);
-            x = (unscaledCoords[iter].x * step) + xOffset;
-            y = (unscaledCoords[iter].y * step) + yOffset;
-            context.lineTo(x, y);
+            var coord = unscaledCoords[iter];
+            x = (coord.x * step) + xOffset;
+            y = (coord.y * step) + yOffset;
+            if (coord.nodraw === undefined)
+            {
+                context.lineTo(x, y);
+            }
             context.stroke();
             if (DEBUGGING) {
                 var text = '(' + x + ',' + y + ')';

@@ -20,7 +20,7 @@
 
             var finished = function() { $spancontainer.empty(); $stash.appendTo($spancontainer); };
 
-            var $edit = $('<input>').attr('type', 'text').val(preEditProd).appendTo($spancontainer);
+            var $edit = $('<input>').attr('type', 'text').addClass('productionedit').val(preEditProd).appendTo($spancontainer);
             $edit.keydown(function(event) {
                 if (event.which == 13) {
                     event.preventDefault();

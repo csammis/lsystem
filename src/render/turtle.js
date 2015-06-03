@@ -148,7 +148,7 @@ function TurtleRender() {
         getRenderCanvas : function() {
             var $obj = $("#TurtleRenderCanvas");
             if ($obj.length == 0) {
-                var $displayArea = $("#displayarea");
+                var $displayArea = $("#main");
                 $obj = $("<canvas />", { id : "TurtleRenderCanvas" })
                     .attr( { "width" : $displayArea.width() - 4,
                              "height" : $displayArea.height() - 4 });

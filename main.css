@@ -35,7 +35,8 @@ h1, h2, h3
     clip:rect(0,0,0,0);
 }
 
-#menu-toggle:checked + label {
+/* Transition the positions of #main and #onscreen-controls when #menu-toggle is checked */
+#menu-toggle:checked + div {
     left:315px;
 }
 
@@ -43,21 +44,38 @@ h1, h2, h3
     left:300px;
 }
 
-#menu-toggle + label, #main {
+#menu-toggle + div, #main {
     transition:left 0.2s;
 }
 
-label[for="menu-toggle"]
-{
+/* Container for a left-side column of onscreen controls that move with the menu */
+#onscreen-controls {
     position:fixed;
     top:15px;
     left:15px;
+    height:0px;
+    width:0px;
+    z-index:2;
+}
+
+/* These "*-block" divs contain the graphics for the onscreen controls */
+#menu-toggle-block
+{
     width:30px;
     height:30px;
     cursor:pointer;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' x='0px' y='0px' width='30px' height='30px' viewBox='0 0 30 30' enable-background='new 0 0 30 30' xml:space='preserve'><rect width='30' height='6' rx='5' ry='5'/><rect y='21' width='30' height='6' rx='5' ry='5'/><rect y='10' width='30' height='6' rx='5' ry='5'/></svg>");
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' x='0px' y='0px' width='30px' height='30px' viewBox='0 0 30 30' xml:space='preserve'><rect width='30' height='6' rx='5' ry='5'/><rect y='21' width='30' height='6' rx='5' ry='5'/><rect y='10' width='30' height='6' rx='5' ry='5'/></svg>");
     background-size:contain;
-    z-index:2;
+}
+
+#start-stopper-block
+{
+    margin-top:1em;
+    width:30px;
+    height:30px;
+    cursor:pointer;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' x='0px' y='0px' width='30px' height='30px' viewBox='0 0 30 30' xml:space='preserve'><path d='M 5,4 L 5,25 L 25,14 Z' stroke-linejoin='round' stroke-width='5' stroke='black' fill='none' /></svg>");
+    background-size:contain;
 }
 
 #menu-navigation ul

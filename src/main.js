@@ -114,6 +114,7 @@
 
         // Bind the Start button to starting this show
         $("#start").click(function() { onStart(); });
+        $("#start-stopper-block").click(function() { onStart(); });
 
         // Bind the render selector
         $("#renderselect").change(function() {

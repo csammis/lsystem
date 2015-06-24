@@ -16,7 +16,7 @@ function TurtleRender() {
             "<b>[</b>: push position and heading<br />" +
             "<b>]</b>: pop position and heading<br />" +
             "<b>Other characters</b>: control evolution</br /><br />" +
-            '<input type="checkbox" id="animateTurtle" /> Animate output';
+            '<input type="checkbox" id="animateTurtle" checked="checked"/> Animate output';
     };
 
     var readParameter = function(data, i, defaultValue, func) {

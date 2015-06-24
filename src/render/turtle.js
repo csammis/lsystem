@@ -32,7 +32,7 @@ function TurtleRender() {
         return newIndex;
     };
 
-    this.render = function(data) {
+    this.render = function(data, onFinished) {
         var $canvas = self.getRenderCanvas();
         var context = $canvas[0].getContext('2d');
 
@@ -135,12 +135,17 @@ function TurtleRender() {
                     iter++;
                     requestAnimationFrame(renderFunc);
                 }
+                else
+                {
+                    onFinished();
+                }
             };
             requestAnimationFrame(renderFunc);
         } else {
             for (var i = 0; i < unscaledCoords.length; i++) {
                 updateXY(i);
             }
+            onFinished();
         }
     };
 

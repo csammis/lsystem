@@ -65,8 +65,13 @@
         if (typeof ret == "string") {
             alert(ret);
         } else {
+            $("#start-stopper-block-stopped").hide();
+            $("#start-stopper-block-started").show();
             var output = lSystem.runGenerations(generationCount);
-            selectedRenderer.render(output);
+            selectedRenderer.render(output, function() {
+                $("#start-stopper-block-started").hide();
+                $("#start-stopper-block-stopped").show();
+            });
         }
     };
 
@@ -114,7 +119,8 @@
 
         // Bind the Start button to starting this show
         $("#start").click(function() { onStart(); });
-        $("#start-stopper-block").click(function() { onStart(); });
+        $("#start-stopper-block-stopped").click(function() { onStart(); });
+        $("#start-stopper-block-started").hide();
 
         // Bind the render selector
         $("#renderselect").change(function() {

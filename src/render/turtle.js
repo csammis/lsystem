@@ -135,10 +135,19 @@ function TurtleRender() {
             }
         };
 
+        var updateStepCount = function(iter) {
+            var displayText = "Step " + (iter + 1) + " of " + unscaledCoords.length;
+            context.fillStyle = "#777777";
+            context.fillRect(0, $canvas.height() - 11, 100, 11);
+            context.fillStyle = "#000000";
+            context.fillText(displayText, 1, $canvas.height() - 2);
+        };
+
         if ($('#animateTurtle').is(':checked')) {
             var iter = 0;
             var renderFunc = function() {
                 updateXY(iter);
+                updateStepCount(iter);
                 if (iter < (unscaledCoords.length - 1)) {
                     iter++;
                     if (!stopRenderLoop)
@@ -160,6 +169,7 @@ function TurtleRender() {
             for (var i = 0; i < unscaledCoords.length; i++) {
                 updateXY(i);
             }
+            updateStepCount(unscaledCoords.length - 1);
             onFinished();
         }
     };

@@ -61,18 +61,25 @@
     };
 
     var onStart = function() {
+        updateOnscreenControlsForStart();
         var ret = lSystem.setAxiom($("#axiom").val());
         if (typeof ret == "string") {
             alert(ret);
+            updateOnscreenControlsForStop();
         } else {
-            $("#start-stopper-block-stopped").hide();
-            $("#start-stopper-block-started").show();
             var output = lSystem.runGenerations(generationCount);
-            selectedRenderer.render(output, function() {
-                $("#start-stopper-block-started").hide();
-                $("#start-stopper-block-stopped").show();
-            });
+            selectedRenderer.render(output, updateOnscreenControlsForStop);
         }
+    };
+
+    var updateOnscreenControlsForStart = function() {
+        $("#start-stopper-block-stopped").hide();
+        $("#start-stopper-block-started").show();
+    };
+
+    var updateOnscreenControlsForStop = function() {
+        $("#start-stopper-block-started").hide();
+        $("#start-stopper-block-stopped").show();
     };
 
     $(function() {

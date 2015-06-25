@@ -131,7 +131,7 @@ function TurtleRender() {
             var iter = 0;
             var renderFunc = function() {
                 updateXY(iter);
-                if (iter < unscaledCoords.length) {
+                if (iter < (unscaledCoords.length - 1)) {
                     iter++;
                     requestAnimationFrame(renderFunc);
                 }

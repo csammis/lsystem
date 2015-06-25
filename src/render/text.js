@@ -8,7 +8,12 @@ function TextRender() {
         return "";
     };
 
-    this.render = function(data) {
+    this.stopRender = function() {
+        // no-op
+    };
+
+    this.render = function(data, onFinished) {
         $("#displayarea").empty().append($("<span>").addClass("wordwrap").text(data));
+        onFinished();
     };
 };

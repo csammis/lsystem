@@ -3,6 +3,8 @@ function TurtleRender() {
     var DEG2RAD = Math.PI / 180;
     var DEBUGGING = false;
 
+    var stopRenderLoop = false;
+
     this.getName = function() {
         return "Turtle graphics";
     };
@@ -32,7 +34,13 @@ function TurtleRender() {
         return newIndex;
     };
 
+    this.stopRender = function() {
+        stopRenderLoop = true;
+    };
+
     this.render = function(data, onFinished) {
+        stopRenderLoop = false;
+
         var $canvas = self.getRenderCanvas();
         var context = $canvas[0].getContext('2d');
 
@@ -133,7 +141,14 @@ function TurtleRender() {
                 updateXY(iter);
                 if (iter < (unscaledCoords.length - 1)) {
                     iter++;
-                    requestAnimationFrame(renderFunc);
+                    if (!stopRenderLoop)
+                    {
+                        requestAnimationFrame(renderFunc);
+                    }
+                    else
+                    {
+                        onFinished();
+                    }
                 }
                 else
                 {

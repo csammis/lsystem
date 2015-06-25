@@ -72,6 +72,10 @@
         }
     };
 
+    var onStop = function() {
+        selectedRenderer.stopRender();
+    };
+
     var updateOnscreenControlsForStart = function() {
         $("#start-stopper-block-stopped").hide();
         $("#start-stopper-block-started").show();
@@ -127,6 +131,7 @@
         // Bind the Start button to starting this show
         $("#start").click(function() { onStart(); });
         $("#start-stopper-block-stopped").click(function() { onStart(); });
+        $("#start-stopper-block-started").click(function() { onStop(); });
         $("#start-stopper-block-started").hide();
         $("#start-stopper-block-started").css("visibility", "visible");
 

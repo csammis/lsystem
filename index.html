@@ -4,6 +4,7 @@
 <!-- All contents released under the MIT license, http://opensource.org/licenses/MIT -->
 <html>
 <head>
+<link href='http://fonts.googleapis.com/css?family=Inconsolata|Open+Sans:700,400' rel='stylesheet' type='text/css'>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <title>L-Systems</title>
 <style type="text/css">
@@ -11,11 +12,8 @@
 </style>
 </head>
 <body>
-<header>
-    <div id="headerleft">
-        <h1>L-Systems</h1>
-    </div>
-    <div id="headerright">
+<div id="menu-controls">
+    <div id="menu-navigation">
         <ul>
             <li><a href="?renderer=1&axiom=F&prod0=F-%3EFLFRFRFLF&gens=8">Koch Curve</a></li>
             <li><a href="?renderer=1&axiom=FX&prod0=X-%3EXRYFR&prod1=Y-%3ELFXLY&gens=12">Dragon Curve</a></li>
@@ -23,11 +21,6 @@
             <li><a href="?renderer=1&axiom=A&prod0=A-%3EBR%2860%29AR%2860%29B&prod1=B-%3EAL%2860%29BL%2860%29A&gens=6">Sierpinski Triangle</a></li>
             <li><a href="?renderer=1&axiom=X&prod0=F-%3EFF&prod1=X-%3EFL(25)%5B%5BX%5DR(25)X%5DR(25)F%5BR(25)FX%5DL(25)X&gens=6">Plant</a></li>
         </ul>
-    </div>
-</header>
-<div id="main">
-    <div id="displayarea">
-        <!-- <canvas id="rendering" width="100" height="100"></canvas> -->
     </div>
     <div id="control">
         <h3>Axiom</h3>
@@ -56,6 +49,17 @@
         </div>
         <div id="renderexplain"></div>
     </div>
+</div>
+<input type="checkbox" id="menu-toggle" />
+<div id="onscreen-controls">
+    <label for="menu-toggle">
+        <div id="menu-toggle-block"></div>
+    </label>
+    <div id="start-stopper-block-stopped"></div>
+    <div id="start-stopper-block-started"></div>
+</div>
+<div id="main">
+        <!-- <canvas id="rendering" width="100" height="100"></canvas> -->
 </div>
 
 <footer>

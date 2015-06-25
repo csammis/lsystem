@@ -16,7 +16,7 @@ function TurtleRender() {
             "<b>[</b>: push position and heading<br />" +
             "<b>]</b>: pop position and heading<br />" +
             "<b>Other characters</b>: control evolution</br /><br />" +
-            '<input type="checkbox" id="animateTurtle" /> Animate output';
+            '<input type="checkbox" id="animateTurtle" checked="checked"/> Animate output';
     };
 
     var readParameter = function(data, i, defaultValue, func) {
@@ -32,7 +32,7 @@ function TurtleRender() {
         return newIndex;
     };
 
-    this.render = function(data) {
+    this.render = function(data, onFinished) {
         var $canvas = self.getRenderCanvas();
         var context = $canvas[0].getContext('2d');
 
@@ -135,12 +135,17 @@ function TurtleRender() {
                     iter++;
                     requestAnimationFrame(renderFunc);
                 }
+                else
+                {
+                    onFinished();
+                }
             };
             requestAnimationFrame(renderFunc);
         } else {
             for (var i = 0; i < unscaledCoords.length; i++) {
                 updateXY(i);
             }
+            onFinished();
         }
     };
 
@@ -148,7 +153,7 @@ function TurtleRender() {
         getRenderCanvas : function() {
             var $obj = $("#TurtleRenderCanvas");
             if ($obj.length == 0) {
-                var $displayArea = $("#displayarea");
+                var $displayArea = $("#main");
                 $obj = $("<canvas />", { id : "TurtleRenderCanvas" })
                     .attr( { "width" : $displayArea.width() - 4,
                              "height" : $displayArea.height() - 4 });

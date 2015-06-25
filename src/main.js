@@ -121,6 +121,7 @@
         $("#start").click(function() { onStart(); });
         $("#start-stopper-block-stopped").click(function() { onStart(); });
         $("#start-stopper-block-started").hide();
+        $("#start-stopper-block-started").css("visibility", "visible");
 
         // Bind the render selector
         $("#renderselect").change(function() {

@@ -137,8 +137,10 @@ function TurtleRender() {
 
         var updateStepCount = function(iter) {
             var displayText = "Step " + (iter + 1) + " of " + unscaledCoords.length;
+            var measureText = "Step " + unscaledCoords.length + " of " + unscaledCoords.length;
+            var metrics = context.measureText(measureText);
             context.fillStyle = "#777777";
-            context.fillRect(0, $canvas.height() - 11, 100, 11);
+            context.fillRect(0, $canvas.height() - 11, metrics.width + 2, 11);
             context.fillStyle = "#000000";
             context.fillText(displayText, 1, $canvas.height() - 2);
         };

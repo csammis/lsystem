@@ -34,6 +34,19 @@ function TurtleRender() {
         return newIndex;
     };
 
+    var precomputeRenderConstants = function($canvas, coordinateCount) {
+        var ret = {};
+        var context = $canvas[0].getContext('2d');
+        var stepCounterTextPx = 10;
+        var measureText = "Step " + coordinateCount + " of " + coordinateCount;
+
+        ret['stepCounterWidth'] = context.measureText(measureText).width + 2;
+        ret['stepCounterHeight'] = stepCounterTextPx + 1;
+        ret['stepCounterY'] = $canvas.height() - stepCounterTextPx - 1;
+        ret['stepCounterTextY'] = $canvas.height() - 2;
+        return ret;
+    };
+
     this.stopRender = function() {
         stopRenderLoop = true;
     };
@@ -135,14 +148,14 @@ function TurtleRender() {
             }
         };
 
+        var renderConstants = precomputeRenderConstants($canvas, unscaledCoords.length);
+
         var updateStepCount = function(iter) {
             var displayText = "Step " + (iter + 1) + " of " + unscaledCoords.length;
-            var measureText = "Step " + unscaledCoords.length + " of " + unscaledCoords.length;
-            var metrics = context.measureText(measureText);
             context.fillStyle = "#777777";
-            context.fillRect(0, $canvas.height() - 11, metrics.width + 2, 11);
+            context.fillRect(0, renderConstants.stepCounterY, renderConstants.stepCounterWidth, renderConstants.stepCounterHeight);
             context.fillStyle = "#000000";
-            context.fillText(displayText, 1, $canvas.height() - 2);
+            context.fillText(displayText, 1, renderConstants.stepCounterTextY);
         };
 
         if ($('#animateTurtle').is(':checked')) {

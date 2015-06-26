@@ -1,7 +1,14 @@
 function TurtleRender() {
 
     var DEG2RAD = Math.PI / 180;
-    var DEBUGGING = false;
+    var stopRenderLoop = false;
+
+    var RENDER_BG_STYLE = "#FFFFFF";
+    var RENDER_FG_STYLE = "#000000";
+    var STEP_COUNTER_BG_STYLE = "#FFFFFF";
+    var STEP_COUNTER_TEXT_SIZE = 20;
+    var STEP_COUNTER_TEXT_STYLE = "#000000";
+    var STEP_COUNTER_TEXT_FONT = STEP_COUNTER_TEXT_SIZE + "px sans-serif";
 
     this.getName = function() {
         return "Turtle graphics";
@@ -32,7 +39,28 @@ function TurtleRender() {
         return newIndex;
     };
 
+    var precomputeRenderConstants = function($canvas, coordinateCount) {
+        var ret = {};
+        var context = $canvas[0].getContext('2d');
+        var measureText = "Step " + coordinateCount + " of " + coordinateCount;
+
+        context.font = STEP_COUNTER_TEXT_FONT;
+        var metrics = context.measureText(measureText);
+
+        ret['stepCounterWidth'] = metrics.width + 2;
+        ret['stepCounterHeight'] = STEP_COUNTER_TEXT_SIZE + 1;
+        ret['stepCounterY'] = $canvas.height() - STEP_COUNTER_TEXT_SIZE - 1;
+        ret['stepCounterTextY'] = $canvas.height() - 2;
+        return ret;
+    };
+
+    this.stopRender = function() {
+        stopRenderLoop = true;
+    };
+
     this.render = function(data, onFinished) {
+        stopRenderLoop = false;
+
         var $canvas = self.getRenderCanvas();
         var context = $canvas[0].getContext('2d');
 
@@ -84,9 +112,8 @@ function TurtleRender() {
         }
 
         // Render loop: clear the canvas, figure out the starting location, draw lines
-        context.fillStyle = "#ffffff";
+        context.fillStyle = RENDER_BG_STYLE;
         context.fillRect(0, 0, $canvas.width(), $canvas.height());
-        context.fillStyle = "#000000";
 
         // Determine the step size so that the render is scaled to the canvas dimensions
         var step = $canvas.width() / (maxX - minX);
@@ -103,13 +130,8 @@ function TurtleRender() {
         // Start at the offset coordinates
         x = xOffset; y = yOffset;
 
-        if (DEBUGGING) {
-            context.beginPath();
-            context.arc(x, y, 10, 10, 0, 2 * Math.PI);
-            context.stroke();
-        }
-
         var updateXY = function(iter) {
+            context.fillStyle = RENDER_FG_STYLE;
             context.beginPath();
             context.moveTo(x, y);
             var coord = unscaledCoords[iter];
@@ -120,20 +142,34 @@ function TurtleRender() {
                 context.lineTo(x, y);
             }
             context.stroke();
-            if (DEBUGGING) {
-                var text = '(' + x + ',' + y + ')';
-                context.fillText(text, x, y);
-                console.log(text);
-            }
+        };
+
+        var renderConstants = precomputeRenderConstants($canvas, unscaledCoords.length);
+
+        var updateStepCount = function(iter) {
+            var displayText = "Step " + (iter + 1) + " of " + unscaledCoords.length;
+            context.fillStyle = STEP_COUNTER_BG_STYLE;
+            context.fillRect(0, renderConstants.stepCounterY, renderConstants.stepCounterWidth, renderConstants.stepCounterHeight);
+            context.fillStyle = STEP_COUNTER_TEXT_STYLE;
+            context.font = STEP_COUNTER_TEXT_FONT;
+            context.fillText(displayText, 1, renderConstants.stepCounterTextY);
         };
 
         if ($('#animateTurtle').is(':checked')) {
             var iter = 0;
             var renderFunc = function() {
                 updateXY(iter);
-                if (iter < unscaledCoords.length) {
+                updateStepCount(iter);
+                if (iter < (unscaledCoords.length - 1)) {
                     iter++;
-                    requestAnimationFrame(renderFunc);
+                    if (!stopRenderLoop)
+                    {
+                        requestAnimationFrame(renderFunc);
+                    }
+                    else
+                    {
+                        onFinished();
+                    }
                 }
                 else
                 {
@@ -145,6 +181,7 @@ function TurtleRender() {
             for (var i = 0; i < unscaledCoords.length; i++) {
                 updateXY(i);
             }
+            updateStepCount(unscaledCoords.length - 1);
             onFinished();
         }
     };

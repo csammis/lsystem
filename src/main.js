@@ -61,18 +61,29 @@
     };
 
     var onStart = function() {
+        updateOnscreenControlsForStart();
         var ret = lSystem.setAxiom($("#axiom").val());
         if (typeof ret == "string") {
             alert(ret);
+            updateOnscreenControlsForStop();
         } else {
-            $("#start-stopper-block-stopped").hide();
-            $("#start-stopper-block-started").show();
             var output = lSystem.runGenerations(generationCount);
-            selectedRenderer.render(output, function() {
-                $("#start-stopper-block-started").hide();
-                $("#start-stopper-block-stopped").show();
-            });
+            selectedRenderer.render(output, updateOnscreenControlsForStop);
         }
+    };
+
+    var onStop = function() {
+        selectedRenderer.stopRender();
+    };
+
+    var updateOnscreenControlsForStart = function() {
+        $("#start-stopper-block-stopped").hide();
+        $("#start-stopper-block-started").show();
+    };
+
+    var updateOnscreenControlsForStop = function() {
+        $("#start-stopper-block-started").hide();
+        $("#start-stopper-block-stopped").show();
     };
 
     $(function() {
@@ -120,7 +131,9 @@
         // Bind the Start button to starting this show
         $("#start").click(function() { onStart(); });
         $("#start-stopper-block-stopped").click(function() { onStart(); });
+        $("#start-stopper-block-started").click(function() { onStop(); });
         $("#start-stopper-block-started").hide();
+        $("#start-stopper-block-started").css("visibility", "visible");
 
         // Bind the render selector
         $("#renderselect").change(function() {

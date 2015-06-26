@@ -3,6 +3,12 @@ function TurtleRender() {
     var DEG2RAD = Math.PI / 180;
     var stopRenderLoop = false;
 
+    var RENDER_BG_STYLE = "#FFFFFF";
+    var RENDER_FG_STYLE = "#000000";
+    var STEP_COUNTER_BG_STYLE = "#999999";
+    var STEP_COUNTER_TEXT_SIZE = 10;
+    var STEP_COUNTER_TEXT_STYLE = "#000000";
+
     this.getName = function() {
         return "Turtle graphics";
     };
@@ -35,12 +41,11 @@ function TurtleRender() {
     var precomputeRenderConstants = function($canvas, coordinateCount) {
         var ret = {};
         var context = $canvas[0].getContext('2d');
-        var stepCounterTextPx = 10;
         var measureText = "Step " + coordinateCount + " of " + coordinateCount;
 
         ret['stepCounterWidth'] = context.measureText(measureText).width + 2;
-        ret['stepCounterHeight'] = stepCounterTextPx + 1;
-        ret['stepCounterY'] = $canvas.height() - stepCounterTextPx - 1;
+        ret['stepCounterHeight'] = STEP_COUNTER_TEXT_SIZE + 1;
+        ret['stepCounterY'] = $canvas.height() - STEP_COUNTER_TEXT_SIZE - 1;
         ret['stepCounterTextY'] = $canvas.height() - 2;
         return ret;
     };
@@ -103,9 +108,8 @@ function TurtleRender() {
         }
 
         // Render loop: clear the canvas, figure out the starting location, draw lines
-        context.fillStyle = "#ffffff";
+        context.fillStyle = RENDER_BG_STYLE;
         context.fillRect(0, 0, $canvas.width(), $canvas.height());
-        context.fillStyle = "#000000";
 
         // Determine the step size so that the render is scaled to the canvas dimensions
         var step = $canvas.width() / (maxX - minX);
@@ -123,6 +127,7 @@ function TurtleRender() {
         x = xOffset; y = yOffset;
 
         var updateXY = function(iter) {
+            context.fillStyle = RENDER_FG_STYLE;
             context.beginPath();
             context.moveTo(x, y);
             var coord = unscaledCoords[iter];
@@ -139,9 +144,9 @@ function TurtleRender() {
 
         var updateStepCount = function(iter) {
             var displayText = "Step " + (iter + 1) + " of " + unscaledCoords.length;
-            context.fillStyle = "#777777";
+            context.fillStyle = STEP_COUNTER_BG_STYLE;
             context.fillRect(0, renderConstants.stepCounterY, renderConstants.stepCounterWidth, renderConstants.stepCounterHeight);
-            context.fillStyle = "#000000";
+            context.fillStyle = STEP_COUNTER_TEXT_STYLE;
             context.fillText(displayText, 1, renderConstants.stepCounterTextY);
         };
 

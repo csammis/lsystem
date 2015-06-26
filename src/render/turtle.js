@@ -1,8 +1,6 @@
 function TurtleRender() {
 
     var DEG2RAD = Math.PI / 180;
-    var DEBUGGING = false;
-
     var stopRenderLoop = false;
 
     this.getName = function() {
@@ -124,12 +122,6 @@ function TurtleRender() {
         // Start at the offset coordinates
         x = xOffset; y = yOffset;
 
-        if (DEBUGGING) {
-            context.beginPath();
-            context.arc(x, y, 10, 10, 0, 2 * Math.PI);
-            context.stroke();
-        }
-
         var updateXY = function(iter) {
             context.beginPath();
             context.moveTo(x, y);
@@ -141,11 +133,6 @@ function TurtleRender() {
                 context.lineTo(x, y);
             }
             context.stroke();
-            if (DEBUGGING) {
-                var text = '(' + x + ',' + y + ')';
-                context.fillText(text, x, y);
-                console.log(text);
-            }
         };
 
         var renderConstants = precomputeRenderConstants($canvas, unscaledCoords.length);

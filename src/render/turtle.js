@@ -5,9 +5,10 @@ function TurtleRender() {
 
     var RENDER_BG_STYLE = "#FFFFFF";
     var RENDER_FG_STYLE = "#000000";
-    var STEP_COUNTER_BG_STYLE = "#999999";
-    var STEP_COUNTER_TEXT_SIZE = 10;
+    var STEP_COUNTER_BG_STYLE = "#FFFFFF";
+    var STEP_COUNTER_TEXT_SIZE = 20;
     var STEP_COUNTER_TEXT_STYLE = "#000000";
+    var STEP_COUNTER_TEXT_FONT = STEP_COUNTER_TEXT_SIZE + "px sans-serif";
 
     this.getName = function() {
         return "Turtle graphics";
@@ -43,7 +44,10 @@ function TurtleRender() {
         var context = $canvas[0].getContext('2d');
         var measureText = "Step " + coordinateCount + " of " + coordinateCount;
 
-        ret['stepCounterWidth'] = context.measureText(measureText).width + 2;
+        context.font = STEP_COUNTER_TEXT_FONT;
+        var metrics = context.measureText(measureText);
+
+        ret['stepCounterWidth'] = metrics.width + 2;
         ret['stepCounterHeight'] = STEP_COUNTER_TEXT_SIZE + 1;
         ret['stepCounterY'] = $canvas.height() - STEP_COUNTER_TEXT_SIZE - 1;
         ret['stepCounterTextY'] = $canvas.height() - 2;
@@ -147,6 +151,7 @@ function TurtleRender() {
             context.fillStyle = STEP_COUNTER_BG_STYLE;
             context.fillRect(0, renderConstants.stepCounterY, renderConstants.stepCounterWidth, renderConstants.stepCounterHeight);
             context.fillStyle = STEP_COUNTER_TEXT_STYLE;
+            context.font = STEP_COUNTER_TEXT_FONT;
             context.fillText(displayText, 1, renderConstants.stepCounterTextY);
         };
 

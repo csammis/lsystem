@@ -49,7 +49,9 @@ function TurtleRender() {
 
         ret['stepCounterWidth'] = metrics.width + 2;
         ret['stepCounterHeight'] = STEP_COUNTER_TEXT_SIZE + 1;
+        ret['stepCounterX'] = 15;
         ret['stepCounterY'] = $canvas.height() - STEP_COUNTER_TEXT_SIZE - 1;
+        ret['stepCounterTextX'] = ret.stepCounterX + 1;
         ret['stepCounterTextY'] = $canvas.height() - 2;
         return ret;
     };
@@ -149,10 +151,10 @@ function TurtleRender() {
         var updateStepCount = function(iter) {
             var displayText = "Step " + (iter + 1) + " of " + unscaledCoords.length;
             context.fillStyle = STEP_COUNTER_BG_STYLE;
-            context.fillRect(0, renderConstants.stepCounterY, renderConstants.stepCounterWidth, renderConstants.stepCounterHeight);
+            context.fillRect(renderConstants.stepCounterX, renderConstants.stepCounterY, renderConstants.stepCounterWidth, renderConstants.stepCounterHeight);
             context.fillStyle = STEP_COUNTER_TEXT_STYLE;
             context.font = STEP_COUNTER_TEXT_FONT;
-            context.fillText(displayText, 1, renderConstants.stepCounterTextY);
+            context.fillText(displayText, renderConstants.stepCounterTextX, renderConstants.stepCounterTextY);
         };
 
         if ($('#animateTurtle').is(':checked')) {
